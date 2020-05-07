@@ -23,22 +23,22 @@
 #define FREQ_400_HZ 400
 #define FREQ_500_HZ 500
 
-/* Running at 16 MHz, one cycle is 0.833333 us.
- * Trying to get a frequency of 50 Hz. */
-#define TIMER_PERIOD_100_HZ 121000
-#define TIMER_PERIOD_200_HZ 121000
-#define TIMER_PERIOD_300_HZ 121000
-#define TIMER_PERIOD_400_HZ 121000
-#define TIMER_PERIOD_500_HZ 121000
+/* Running at 16 MHz, one cycle is 0.833333 us */
+#define TIMER_PERIOD_100_HZ 120000
+#define TIMER_PERIOD_200_HZ 60000
+#define TIMER_PERIOD_300_HZ 40000
+#define TIMER_PERIOD_400_HZ 30000
+#define TIMER_PERIOD_500_HZ 24000
 
 /* bigger wave table size => higher resolution */
 #define WAVE_TABLE_SIZE 128
 
 /* function prototypes */
-void generate_square_wave(int voltage, int duty_cycle);
-void generate_triangle_wave(int voltage);
+void generate_square_wave(uint8_t voltage, uint8_t duty_cycle);
+void generate_saw_wave(uint8_t voltage);
+void generate_sine_wave(uint8_t voltage);
 
-void setup_timer();
+void setup_timer(uint16_t freq);
 void TA0_0_IRQHandler();
 
 /* table which is populated by waveforms.c */

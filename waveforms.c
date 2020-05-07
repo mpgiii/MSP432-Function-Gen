@@ -11,7 +11,7 @@
 
 #include <math.h>
 
-
+int index = 0;
 int wave_table[WAVE_TABLE_SIZE] = {0};
 
 void setup_timer(uint16_t freq) {
@@ -58,7 +58,7 @@ void TA0_0_IRQHandler() {
  * passed in.
  * note: duty_cycle is a integer from 0-100, representing percentage
  * for duty_cycle */
-void generate_square_wave(int voltage, int duty_cycle) {
+void generate_square_wave(uint8_t voltage, uint8_t duty_cycle) {
     int i;
     int offset = (duty_cycle * WAVE_TABLE_SIZE) / 100;
 
@@ -73,7 +73,7 @@ void generate_square_wave(int voltage, int duty_cycle) {
 /* populates global wave_table with a sawtooth wave.
  * ground will always be at 0, and the "high" value will be the voltage
  * passed in. */
-void generate_saw_wave(int voltage) {
+void generate_saw_wave(uint8_t voltage) {
     int i;
     int res = 0;
 
@@ -86,7 +86,7 @@ void generate_saw_wave(int voltage) {
 /* populates global wave_table with a sine wave.
  * ground will always be at 0, and the "high" value will be the voltage
  * passed in. */
-void generate_sine_wave(int voltage) {
+void generate_sine_wave(uint8_t voltage) {
     int i;
     int res = 0;
 

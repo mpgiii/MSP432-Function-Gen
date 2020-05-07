@@ -1,5 +1,8 @@
 #include "msp.h"
-
+#include "spi.h"
+#include "delay.h"
+#include "waveforms.h"
+#include "keypad.h"
 
 /**
  * P2 main.c
@@ -35,14 +38,16 @@ void main(void)
     /* start the output at 0 volts */
     send_to_DAC(0);
 
-	while(1) {
-	    /* get input from keypad */
-	    c = keypad_get_key();
+    while(1) {
+        /* get input from keypad */
+        __disable_irq();
+        c = keypad_get_key();
+        __enable_irq();
 
-	    /* depending on which key is pressed, do something */
-	    switch(c) {
-	        /* when 1-5 are pressed, set the frequency of the output to
-	         * 100-500 Hz, respectively */
+        /* depending on which key is pressed, do something */
+        switch(c) {
+            /* when 1-5 are pressed, set the frequency of the output to
+             * 100-500 Hz, respectively */
             case '1' :
                 setup_timer(FREQ_100_HZ);
                 break;
@@ -61,15 +66,15 @@ void main(void)
 
             /* when 7-9 are pressed, set the output waveform to
              * square, sine, and sawtooth, respectively */
-            case '6' :
+            case '7' :
                 generate_square_wave(DEFAULT_VOLTAGE, duty_cycle);
                 square_flag = 1;
                 break;
-            case '7' :
+            case '8' :
                 generate_sine_wave(DEFAULT_VOLTAGE);
                 square_flag = 0;
                 break;
-            case '8' :
+            case '9' :
                 generate_saw_wave(DEFAULT_VOLTAGE);
                 square_flag = 0;
                 break;
@@ -106,6 +111,6 @@ void main(void)
                 if (square_flag)
                     generate_square_wave(DEFAULT_VOLTAGE, duty_cycle);
                 break;
-	    }
-	}
+        }
+    }
 }

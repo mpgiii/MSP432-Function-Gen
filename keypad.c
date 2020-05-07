@@ -10,6 +10,12 @@
 
 void keypad_init()
 {
+    /* set the pins as simple IO */
+    COLS -> SEL0 &= ~(C1 | C2 | C3);
+    COLS -> SEL1 &= ~(C1 | C2 | C3);
+    ROWS -> SEL0 &= ~(R1 | R2 | R3 | R4);
+    ROWS -> SEL1 &= ~(R1 | R2 | R3 | R4);
+
     /* set column bits to be outputs */
     COLS -> DIR |= (C1 | C2 | C3);
     COLS -> OUT &= ~(C1 | C2 | C3);
