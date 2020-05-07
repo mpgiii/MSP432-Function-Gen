@@ -86,7 +86,7 @@ void generate_saw_wave(int voltage) {
 /* populates global wave_table with a sine wave.
  * ground will always be at 0, and the "high" value will be the voltage
  * passed in. */
-void generate_saw_wave(int voltage) {
+void generate_sine_wave(int voltage) {
     int i;
     int res = 0;
 
