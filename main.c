@@ -40,9 +40,7 @@ void main(void)
 
     while(1) {
         /* get input from keypad */
-        __disable_irq();
         c = keypad_get_key();
-        __enable_irq();
 
         /* depending on which key is pressed, do something */
         switch(c) {

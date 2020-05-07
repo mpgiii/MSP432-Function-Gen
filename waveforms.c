@@ -21,16 +21,27 @@ void setup_timer(uint16_t freq) {
     /* run the timer until our period is up */
     TIMER_A0 -> CCTL[0] = TIMER_A_CCTLN_CCIE;
 
-    if (freq == FREQ_100_HZ)
-        TIMER_A0 -> CCR[0] = TIMER_PERIOD_100_HZ/WAVE_TABLE_SIZE;
-    else if (freq == FREQ_200_HZ)
-        TIMER_A0 -> CCR[0] = TIMER_PERIOD_200_HZ/WAVE_TABLE_SIZE;
-    else if (freq == FREQ_300_HZ)
-        TIMER_A0 -> CCR[0] = TIMER_PERIOD_300_HZ/WAVE_TABLE_SIZE;
-    else if (freq == FREQ_400_HZ)
-        TIMER_A0 -> CCR[0] = TIMER_PERIOD_400_HZ/WAVE_TABLE_SIZE;
-    else if (freq == FREQ_500_HZ)
-        TIMER_A0 -> CCR[0] = TIMER_PERIOD_500_HZ/WAVE_TABLE_SIZE;
+    switch(freq) {
+        case FREQ_100_HZ :
+            TIMER_A0 -> CCR[0] = TIMER_PERIOD_100_HZ/WAVE_TABLE_SIZE;
+            break;
+        case FREQ_200_HZ :
+            TIMER_A0 -> CCR[0] = TIMER_PERIOD_200_HZ/WAVE_TABLE_SIZE;
+            break;
+        case FREQ_300_HZ :
+            TIMER_A0 -> CCR[0] = TIMER_PERIOD_300_HZ/WAVE_TABLE_SIZE;
+            break;
+        case FREQ_400_HZ :
+            TIMER_A0 -> CCR[0] = TIMER_PERIOD_400_HZ/WAVE_TABLE_SIZE;
+            break;
+        case FREQ_500_HZ :
+            TIMER_A0 -> CCR[0] = TIMER_PERIOD_500_HZ/WAVE_TABLE_SIZE;
+            break;
+        default :
+            TIMER_A0 -> CCR[0] = TIMER_PERIOD_100_HZ/WAVE_TABLE_SIZE;
+            break;
+    }
+
 
     /* ISR for CCR0 */
     NVIC -> ISER[0] = 1 << (TA0_0_IRQn & 31);
