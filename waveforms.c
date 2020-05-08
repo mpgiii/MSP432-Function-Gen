@@ -12,7 +12,11 @@
 #include <math.h>
 
 int index = 0;
-int wave_table[WAVE_TABLE_SIZE] = {0};
+int* wave_table;
+
+int square_table[WAVE_TABLE_SIZE] = {0};
+int sine_table[WAVE_TABLE_SIZE] = {0};
+int saw_table[WAVE_TABLE_SIZE] = {0};
 
 void setup_timer(uint16_t freq) {
     /* enable interrupts for CCR0 */
@@ -21,6 +25,7 @@ void setup_timer(uint16_t freq) {
     /* run the timer until our period is up */
     TIMER_A0 -> CCTL[0] = TIMER_A_CCTLN_CCIE;
 
+    /* set timer to go off every 1/64th of our period */
     switch(freq) {
         case FREQ_100_HZ :
             TIMER_A0 -> CCR[0] = TIMER_PERIOD_100_HZ/WAVE_TABLE_SIZE;
@@ -64,45 +69,46 @@ void TA0_0_IRQHandler() {
 }
 
 
-/* populates global wave_table with a square wave.
+/* populates global square wave table..
  * ground will always be at 0, and the "high" value will be the voltage
  * passed in.
  * note: duty_cycle is a integer from 0-100, representing percentage
  * for duty_cycle */
-void generate_square_wave(uint8_t voltage, uint8_t duty_cycle) {
+void populate_square_table(uint8_t voltage, uint8_t duty_cycle) {
     int i;
     int offset = (duty_cycle * WAVE_TABLE_SIZE) / 100;
 
     for (i = 0; i < offset; i++) {
-        wave_table[i] = voltage * DAC_MULTIPLIER;
+        square_table[i] = voltage * DAC_MULTIPLIER;
     }
     for (; i < WAVE_TABLE_SIZE; i++) {
-        wave_table[i] = 0;
+        square_table[i] = 0;
     }
 }
 
-/* populates global wave_table with a sawtooth wave.
+/* populates global sawtooth wave table.
  * ground will always be at 0, and the "high" value will be the voltage
  * passed in. */
-void generate_saw_wave(uint8_t voltage) {
+void populate_saw_table(uint8_t voltage) {
     int i;
     int res = 0;
 
     for (i = 0; i < WAVE_TABLE_SIZE; i++) {
-        wave_table[i] = res;
+        saw_table[i] = res;
         res += (voltage * DAC_MULTIPLIER) / WAVE_TABLE_SIZE;
     }
 }
 
-/* populates global wave_table with a sine wave.
+/* populates global sine wave table.
  * ground will always be at 0, and the "high" value will be the voltage
  * passed in. */
-void generate_sine_wave(uint8_t voltage) {
+void populate_sine_table(uint8_t voltage) {
     int i;
     int res = 0;
+    int amplitude = (voltage * DAC_MULTIPLIER) / 2;
 
     for (i = 0; i < WAVE_TABLE_SIZE; i++) {
-        wave_table[i] = res;
-        res += (voltage * DAC_MULTIPLIER) * sin((i * 2*PI) / WAVE_TABLE_SIZE);
+        sine_table[i] = res;
+        res = amplitude * sin((i * 2*PI) / WAVE_TABLE_SIZE) + amplitude;
     }
 }

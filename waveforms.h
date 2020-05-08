@@ -34,14 +34,17 @@
 #define WAVE_TABLE_SIZE 128
 
 /* function prototypes */
-void generate_square_wave(uint8_t voltage, uint8_t duty_cycle);
-void generate_saw_wave(uint8_t voltage);
-void generate_sine_wave(uint8_t voltage);
+void populate_square_table(uint8_t voltage, uint8_t duty_cycle);
+void populate_saw_table(uint8_t voltage);
+void populate_sine_table(uint8_t voltage);
 
 void setup_timer(uint16_t freq);
 void TA0_0_IRQHandler();
 
 /* table which is populated by waveforms.c */
-extern int wave_table[WAVE_TABLE_SIZE];
+extern int* wave_table;
+extern int square_table[WAVE_TABLE_SIZE];
+extern int sine_table[WAVE_TABLE_SIZE];
+extern int saw_table[WAVE_TABLE_SIZE];
 
 #endif /* WAVEFORMS_H_ */

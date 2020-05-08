@@ -20,14 +20,19 @@ void main(void)
     /* character to store keypad input */
     char c;
 
-    /* flag which is set only if a square wave is currently being output */
-    uint8_t square_flag = 0;
-
     /* initialize duty cycle to 50% for square wave */
     uint8_t duty_cycle = DEFAULT_DUTY_CYCLE;
 
     /* stop watchdog timer */
-	WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;
+    WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;
+
+    /* initialize wave tables */
+    populate_square_table(DEFAULT_VOLTAGE, duty_cycle);
+    populate_saw_table(DEFAULT_VOLTAGE);
+    populate_sine_table(DEFAULT_VOLTAGE);
+
+    /* set the default wave to be the square wave (why not) */
+    wave_table = square_table;
 
     /* set the DCO to run at 12 MHz */
     set_DCO(FREQ_12_MHZ);
@@ -35,8 +40,14 @@ void main(void)
     /* initialize the SPI */
     SPI_init();
 
+    /* initialize the keypad */
+    keypad_init();
+
     /* start the output at 0 volts */
     send_to_DAC(0);
+
+    /* initialize the timer to run at 100 Hz */
+    setup_timer(FREQ_100_HZ);
 
     while(1) {
         /* get input from keypad */
@@ -65,49 +76,41 @@ void main(void)
             /* when 7-9 are pressed, set the output waveform to
              * square, sine, and sawtooth, respectively */
             case '7' :
-                generate_square_wave(DEFAULT_VOLTAGE, duty_cycle);
-                square_flag = 1;
+                wave_table = square_table;
                 break;
             case '8' :
-                generate_sine_wave(DEFAULT_VOLTAGE);
-                square_flag = 0;
+                wave_table = sine_table;
                 break;
             case '9' :
-                generate_saw_wave(DEFAULT_VOLTAGE);
-                square_flag = 0;
+                wave_table = saw_table;
                 break;
 
             /* the '*' key decreases the duty cycle by 10%, down to a minimum
              * of 10% (only for square wave, obviously) */
             case '*' :
                 duty_cycle -= DUTY_CYCLE_INCREMENT;
-                if (duty_cycle <= MIN_DUTY_CYCLE)
+                if (duty_cycle <= MIN_DUTY_CYCLE) {
                     duty_cycle = MIN_DUTY_CYCLE;
-                /* if a square wave is currently running, immediately update
-                 * its duty cycle */
-                if (square_flag)
-                    generate_square_wave(DEFAULT_VOLTAGE, duty_cycle);
+                }
+                populate_square_table(DEFAULT_VOLTAGE, duty_cycle);
+                delay_us(100000); /* delay to avoid button bounce */
                 break;
 
             /* the '0' key increases the duty cycle by 10%, up to a maximum
              * of 90% (only for square wave, obviously) */
             case '0' :
                 duty_cycle += DUTY_CYCLE_INCREMENT;
-                if (duty_cycle >= MAX_DUTY_CYCLE)
+                if (duty_cycle >= MAX_DUTY_CYCLE) {
                     duty_cycle = MAX_DUTY_CYCLE;
-                /* if a square wave is currently running, immediately update
-                 * its duty cycle */
-                if (square_flag)
-                    generate_square_wave(DEFAULT_VOLTAGE, duty_cycle);
+                }
+                populate_square_table(DEFAULT_VOLTAGE, duty_cycle);
+                delay_us(100000); /* delay to avoid button bounce */
                 break;
 
             /* the '#' key sets the duty cycle to 50% */
             case '#' :
                 duty_cycle = DEFAULT_DUTY_CYCLE;
-                /* if a square wave is currently running, immediately update
-                 * its duty cycle */
-                if (square_flag)
-                    generate_square_wave(DEFAULT_VOLTAGE, duty_cycle);
+                populate_square_table(DEFAULT_VOLTAGE, duty_cycle);
                 break;
         }
     }
