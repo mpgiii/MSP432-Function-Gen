@@ -108,7 +108,7 @@ void populate_sine_table(uint8_t voltage) {
     int amplitude = (voltage * DAC_MULTIPLIER) / 2;
 
     for (i = 0; i < WAVE_TABLE_SIZE; i++) {
+        res = (amplitude * sin((i * 2*PI) / WAVE_TABLE_SIZE)) + amplitude;
         sine_table[i] = res;
-        res = amplitude * sin((i * 2*PI) / WAVE_TABLE_SIZE) + amplitude;
     }
 }
