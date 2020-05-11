@@ -108,7 +108,6 @@ void main(void)
             case '8' :
                 wave_table = sine_table;
                 LCD_go_to_line(2);
-                sprintf(buffer, "%2d%% PWM", duty_cycle);
                 write_string_to_LCD("Sine    ");
                 break;
             case '9' :
@@ -133,7 +132,7 @@ void main(void)
                     sprintf(buffer, "%2d%% PWM  ", duty_cycle);
                     write_string_to_LCD(buffer);
                 }
-                delay_us(100000); /* delay to avoid button bounce */
+                delay_us(50000); /* delay to avoid button bounce */
                 break;
 
             /* the '0' key increases the duty cycle by 10%, up to a maximum
@@ -152,7 +151,7 @@ void main(void)
                     sprintf(buffer, "%2d%% PWM  ", duty_cycle);
                     write_string_to_LCD(buffer);
                 }
-                delay_us(100000); /* delay to avoid button bounce */
+                delay_us(50000); /* delay to avoid button bounce */
                 break;
 
             /* the '#' key sets the duty cycle to 50% */
