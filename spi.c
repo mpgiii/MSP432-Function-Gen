@@ -32,6 +32,8 @@ void SPI_init(void) {
     EUSCI_B0 -> BRW = 0x01;
 
     /* set the CS bit as an output */
+    CS_PORT -> SEL0 &= ~CS_BIT;
+    CS_PORT -> SEL1 &= ~CS_BIT;
     CS_PORT -> DIR |= CS_BIT;
     CS_PORT -> OUT |= CS_BIT;
 

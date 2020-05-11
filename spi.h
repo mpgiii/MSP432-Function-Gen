@@ -9,8 +9,8 @@
 #define SPI_H_
 
 /* constant definitions */
-#define CS_PORT P4
-#define CS_BIT  BIT1
+#define CS_PORT P3
+#define CS_BIT  BIT6
 
 #define SPI_PORT P1
 #define CLK_BIT BIT5
