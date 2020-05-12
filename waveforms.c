@@ -1,23 +1,35 @@
+/* waveforms.c
+ * Written by Connor McKee and Michael Georgariou
+ * CPE 316 - Spring 2020
+ *
+ * - Has function to begin reading wave table being pointed to by wave_table
+ *   and outputting it to a DAC in an interrupt handler
+ * - Maintains a few wave tables to be used by a MSP432 function generator.
+ * - Resolution can be increased by adjusting WAVE_TABLE_SIZE in waveforms.h.
+ * - Tables can be added easily -- just populate another table of size
+ *   WAVE_TABLE_SIZE. Whichever table currently being pointed to by the
+ *   wave_table pointer will be the one being outputted to a DAC. */
+
 #include "msp.h"
 #include "spi.h"
 #include "waveforms.h"
 
-/*
- * waveforms.c
- *
- *  Created on: May 3, 2020
- *      Author: Michael Georgariou and Connor McKee
- */
-
 #include <math.h>
 
-int index = 0;
-int* wave_table;
+/* pointer to current wave table being outputted to the DAC. Set this to the
+ * wave you want to be outputting (header file declares this as extern, so it
+ * can be updated wherever waveforms.h is included) */
+uint16_t* wave_table;
 
-int square_table[WAVE_TABLE_SIZE] = {0};
-int sine_table[WAVE_TABLE_SIZE] = {0};
-int saw_table[WAVE_TABLE_SIZE] = {0};
+/* wave tables populated later of size WAVE_TABLE_SIZE */
+uint16_t square_table[WAVE_TABLE_SIZE] = {0};
+uint16_t sine_table[WAVE_TABLE_SIZE] = {0};
+uint16_t saw_table[WAVE_TABLE_SIZE] = {0};
 
+
+/* setup_timer
+ * Sets up an interrupt to go off WAVE_TABLE_SIZE times per period.
+ * Frequency determined by value passed in */
 void setup_timer(uint16_t freq) {
     /* enable interrupts for CCR0 */
     TIMER_A0 -> CTL = (TIMER_A_CTL_TASSEL_2 | TIMER_A_CTL_MC_1);
@@ -56,8 +68,11 @@ void setup_timer(uint16_t freq) {
 }
 
 
-/* interrupt handler which sends next table value to DAC */
+/* TA0_0_IRQHandler
+ * interrupt handler which sends next table value to DAC */
 void TA0_0_IRQHandler() {
+    static int index = 0;
+
     TIMER_A0 -> CCTL[0] &= ~TIMER_A_CCTLN_CCIFG;
 
     /* output the current lookup table voltage to the DAC */
@@ -69,7 +84,8 @@ void TA0_0_IRQHandler() {
 }
 
 
-/* populates global square wave table..
+/* populate_square_table
+ * populates global square wave table.
  * ground will always be at 0, and the "high" value will be the voltage
  * passed in.
  * note: duty_cycle is a integer from 0-100, representing percentage
@@ -86,7 +102,8 @@ void populate_square_table(uint8_t voltage, uint8_t duty_cycle) {
     }
 }
 
-/* populates global sawtooth wave table.
+/* populate_saw_table
+ * populates global sawtooth wave table.
  * ground will always be at 0, and the "high" value will be the voltage
  * passed in. */
 void populate_saw_table(uint8_t voltage) {
@@ -99,7 +116,8 @@ void populate_saw_table(uint8_t voltage) {
     }
 }
 
-/* populates global sine wave table.
+/* populate_sine_table
+ * populates global sine wave table.
  * ground will always be at 0, and the "high" value will be the voltage
  * passed in. */
 void populate_sine_table(uint8_t voltage) {

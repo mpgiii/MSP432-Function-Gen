@@ -1,14 +1,15 @@
+/* spi.c
+ * Written by Connor McKee and Michael Georgariou
+ * CPE 316 - Spring 2020
+ *
+ * For use with the MSP432.
+ * DAC functions for use with the MCP4921. */
+
 #include "msp.h"
 #include "spi.h"
 
-/*
- * spi.c
- *
- *  Created on: Apr 29, 2020
- *      Author: mpgii
- */
-
-
+/* SPI_init
+ * initializes SPI communication on the MSP432. */
 void SPI_init(void) {
 
     /* first reset the EUSCI */
@@ -26,10 +27,6 @@ void SPI_init(void) {
                      |  EUSCI_B_CTLW0_UCSSEL_2
                      |  EUSCI_B_CTLW0_MSB
                      |  EUSCI_B_CTLW0_MST;
-
-    /* run the SMCLK at full speed (do not bitscale it) */
-    /* TODO: this may not be needed */
-    EUSCI_B0 -> BRW = 0x01;
 
     /* set the CS bit as an output */
     CS_PORT -> SEL0 &= ~CS_BIT;
@@ -51,6 +48,9 @@ void SPI_init(void) {
     return;
 }
 
+/* send_to_DAC
+ * For use with the MCP4921. Takes in a 12-bit number, sent as a digital
+ * input to the DAC. */
 void send_to_DAC(uint16_t output) {
     uint8_t low;
     uint8_t high;

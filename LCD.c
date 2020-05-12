@@ -1,25 +1,15 @@
-/*
- * LCD.c
+/* LCD.c
+ * Written by Connor McKee and Michael Georgariou
+ * CPE 316 - Spring 2020
  *
- *  Created on: Apr 16, 2020
- *      Author: Michael Georgariou & Connor McKee
- */
+ * For use with the 1602A 16x2 LCD display module. */
+
 #include "msp.h"
 #include "LCD.h"
 #include "delay.h"
-#include <stdio.h>
 
-
-void write_string_to_LCD(char* string) {
-    int i;
-
-    /* loop through the inputted string, writing each character, until we hit
-     * the null terminator. */
-    for (i = 0; string[i] != '\0'; i++) {
-        LCD_nibble_write(string[i]);
-    }
-}
-
+/* LCD_write_command
+ * Writes the passed in command to the LCD. */
 void LCD_write_command(uint8_t command){
 
     /* clear out the data bits */
@@ -40,6 +30,9 @@ void LCD_write_command(uint8_t command){
     delay_us(2000);
 }
 
+/* LCD_nibble_write_command
+ * To be used when nibble mode is enabled -- sends the highest four bits
+ * of the inputted command, then the lower four bits */
 void LCD_nibble_write_command(uint8_t command) {
     /* write the highest four bits, then the lowest four bits. */
     LCD_write_command(command & 0xF0);
@@ -48,6 +41,8 @@ void LCD_nibble_write_command(uint8_t command) {
     delay_us(1000);
 }
 
+/* LCD_write
+ * Writes a character to the LCD. */
 void LCD_write(uint8_t data){
 
     /* clear out the data bits */
@@ -68,6 +63,9 @@ void LCD_write(uint8_t data){
     delay_us(2000);
 }
 
+/* LCD_nibble_write_command
+ * To be used when nibble mode is enabled -- sends the highest four bits
+ * of the inputted character, then the lower four bits */
 void LCD_nibble_write(uint8_t data){
     /* write the highest four bits, then the lowest four bits. */
     LCD_write(data & 0xF0);
@@ -76,7 +74,22 @@ void LCD_nibble_write(uint8_t data){
     delay_us(50);
 }
 
-void LCD_go_to_line(int line)
+/* LCD_write_string
+ * Takes in a string and writes it to the LCD at its current cursor location */
+void LCD_write_string(char* string) {
+    int i;
+
+    /* loop through the inputted string, writing each character, until we hit
+     * the null terminator. */
+    for (i = 0; string[i] != '\0'; i++) {
+        LCD_nibble_write(string[i]);
+    }
+}
+
+/* LCD_go_to_line
+ * Set the cursor of the LCD to the inputted line
+ * (LCD is only two lines tall, so input should be either 1 or 2 */
+void LCD_go_to_line(uint8_t line)
 {
     /* set the DDRAM address to start writing at the inputted line. */
     if (line == 2) {
@@ -87,6 +100,8 @@ void LCD_go_to_line(int line)
     }
 }
 
+/* LCD_reset
+ * Pretty self-explanatory. */
 void LCD_reset()
 {
     /* pretty self explanatory! */
@@ -94,40 +109,51 @@ void LCD_reset()
     LCD_home();
 }
 
-/* This function returns the cursor to the upper left corner */
+/* LCD_home
+ * This function returns the cursor to the upper left corner */
 void LCD_home()
 {
     LCD_nibble_write_command(DISPLAY_CURSOR_HOME);
 }
 
-/* This function will clear the screen */
+/* LCD_clear
+ * This function will clear the screen */
 void LCD_clear()
 {
     LCD_nibble_write_command(CLEAR_DISPLAY);
 }
 
-/* This function will turn off the cursor */
+/* LCD_turn_off_cursor
+ * This function will turn off the cursor */
 void LCD_turn_off_cursor() {
     LCD_nibble_write_command(DISPLAY_CONTROL | DISPLAY_ON);
 }
 
-/* This function will turn on the cursor */
+/* LCD_turn_on_cursor
+ * This function will turn on the cursor */
 void LCD_turn_on_cursor() {
     LCD_nibble_write_command(DISPLAY_CONTROL | DISPLAY_ON |
                              CURSOR_DISPLAY_ON | CURSOR_BLINK_ON);
 }
 
+/* LCD_init
+ * Initializes the LCD with the following settings:
+ *   - function set is dual line
+ *   - display on, with cursor blinking
+ *   - display cleared
+ *   - entry mode increment */
 void LCD_init(){
-//    LCD0->SEL1 &= ~(0xFF); /* Configure P4. as simple I/O */
-//    LCD0->SEL0 &= ~(0xFF);
+    /* config LCD pins as simple IO */
+    LCD0->SEL1 &= ~(RS | RW | EN | DB4 | DB5 | DB6 | DB7);
+    LCD0->SEL0 &= ~(RS | RW | EN | DB4 | DB5 | DB6 | DB7);
 
     /* configure all of the LCD pins as output */
-    LCD0->DIR |= 0xFF;
+    LCD0->DIR |= (RS | RW | EN | DB4 | DB5 | DB6 | DB7);
 
     /* delay before initialization, for boot time */
     delay_us(100000);
 
-    /* wake up! */
+    /* wake up! (sequence from data sheet) */
     LCD_write_command(0x00);
     LCD_write_command(0x00);
     LCD_write_command(0x00);

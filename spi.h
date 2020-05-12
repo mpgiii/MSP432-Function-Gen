@@ -1,9 +1,6 @@
-/*
- * spi.h
- *
- *  Created on: Apr 29, 2020
- *      Author: mpgii
- */
+/* spi.h
+ * Written by Connor McKee and Michael Georgariou
+ * CPE 316 - Spring 2020 */
 
 #ifndef SPI_H_
 #define SPI_H_

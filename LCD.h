@@ -1,11 +1,6 @@
-/*
- * LCD.h
- *
- *  Created on: Apr 16, 2020
- *      Author: Michael Georgariou & Connor McKee
- */
-
-
+/* LCD.h
+ * Written by Connor McKee and Michael Georgariou
+ * CPE 316 - Spring 2020 */
 
 #ifndef LCD_H_
 #define LCD_H_
@@ -58,13 +53,9 @@
 void LCD_init();
 void LCD_home();
 void LCD_clear();
-void LCD_write_command(uint8_t command);
 void LCD_write(uint8_t data);
-void write_string_to_LCD(char* string);
-void pass_A3(char* string);
-void LCD_nibble_write(uint8_t data);
-void LCD_nibble_write_command(uint8_t data);
-void LCD_go_to_line(int line);
+void LCD_write_string(char* string);
+void LCD_go_to_line(uint8_t line);
 void LCD_turn_on_cursor();
 void LCD_turn_off_cursor();
 void LCD_reset();

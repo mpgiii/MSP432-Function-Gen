@@ -1,9 +1,6 @@
-/*
- * keypad.h
- *
- *  Created on: Apr 21, 2020
- *      Author: Michael Georgariou & Connor McKee
- */
+/* keypad.h
+ * Written by Connor McKee and Michael Georgariou
+ * CPE 316 - Spring 2020 */
 
 #ifndef KEYPAD_H_
 #define KEYPAD_H_

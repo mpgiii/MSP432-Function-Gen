@@ -1,3 +1,8 @@
+/* delay.h
+ * Written by Connor McKee and Michael Georgariou
+ * For use with delay.c for the MSP432
+ * CPE 316 - Spring 2020 */
+
 #ifndef DELAY_H
 #define DELAY_H
 #include "msp.h"

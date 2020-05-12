@@ -1,6 +1,14 @@
+/* delay.c
+ * Written by Connor McKee and Michael Georgariou
+ * CPE 316 - Spring 2020
+ *
+ * For use with the MSP432. */
+
 #include "msp.h"
 #include "delay.h"
 
+/* set_DCO
+ * sets the DCO to run at the inputted frequency */
 void set_DCO(uint32_t MHz)
 {
     CS -> KEY = CS_KEY_VAL; /* unlock CS */
@@ -42,7 +50,8 @@ void set_DCO(uint32_t MHz)
     CS -> KEY = 0;
 }
 
-
+/* delay_us
+ * Delays the MSP432 the inputted amount of microseconds */
 void delay_us(uint32_t us)
 {
     int i;

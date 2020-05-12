@@ -1,13 +1,14 @@
-/*
- * LCD.c
+/* keypad.c
+ * Written by Connor McKee and Michael Georgariou
+ * CPE 316 - Spring 2020
  *
- *  Created on: Apr 18, 2020
- *      Author: Michael Georgariou & Connor McKee
- */
+ * For use with any generic keypad. */
 
 #include "msp.h"
 #include "keypad.h"
 
+/* keypad_init
+ * To be run before using the keypad, initializes the keypad for use */
 void keypad_init()
 {
     /* set the pins as simple IO */
@@ -26,7 +27,8 @@ void keypad_init()
     ROWS -> OUT &= ~(R1 | R2 | R3 | R4);
 }
 
-/* returns pressed key when pressed, and 0xFF if none were pressed */
+/* keypad_get_key
+ * returns pressed key as a character, or 0xFF if nothing was being pressed */
 char keypad_get_key()
 {
     int i = 0;

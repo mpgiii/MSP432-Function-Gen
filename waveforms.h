@@ -1,9 +1,6 @@
-/*
- * waveforms.h
- *
- *  Created on: May 3, 2020
- *      Author: mpgii
- */
+/* waveforms.h
+ * Written by Connor McKee and Michael Georgariou
+ * CPE 316 - Spring 2020 */
 
 #ifndef WAVEFORMS_H_
 #define WAVEFORMS_H_
@@ -23,12 +20,12 @@
 #define FREQ_400_HZ 400
 #define FREQ_500_HZ 500
 
-/* Running at 16 MHz, one cycle is 0.833333 us */
-#define TIMER_PERIOD_100_HZ 120000
-#define TIMER_PERIOD_200_HZ 60000
-#define TIMER_PERIOD_300_HZ 40000
-#define TIMER_PERIOD_400_HZ 30000
-#define TIMER_PERIOD_500_HZ 24000
+/* periods for given frequency, running at 24 MHz */
+#define TIMER_PERIOD_100_HZ 240000
+#define TIMER_PERIOD_200_HZ 120000
+#define TIMER_PERIOD_300_HZ 80000
+#define TIMER_PERIOD_400_HZ 60000
+#define TIMER_PERIOD_500_HZ 48000
 
 /* bigger wave table size => higher resolution */
 #define WAVE_TABLE_SIZE 128
@@ -41,10 +38,13 @@ void populate_sine_table(uint8_t voltage);
 void setup_timer(uint16_t freq);
 void TA0_0_IRQHandler();
 
-/* table which is populated by waveforms.c */
-extern int* wave_table;
-extern int square_table[WAVE_TABLE_SIZE];
-extern int sine_table[WAVE_TABLE_SIZE];
-extern int saw_table[WAVE_TABLE_SIZE];
+
+/* pointer to table currently being sent to the DAC */
+extern uint16_t* wave_table;
+
+/* tables which are populated by waveforms.c */
+extern uint16_t square_table[WAVE_TABLE_SIZE];
+extern uint16_t sine_table[WAVE_TABLE_SIZE];
+extern uint16_t saw_table[WAVE_TABLE_SIZE];
 
 #endif /* WAVEFORMS_H_ */
