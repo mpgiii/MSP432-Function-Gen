@@ -45,5 +45,6 @@ In the case of changing the duty cycle of the square wave, we currently complete
 That's how it works! :)
 
 #### Acknowledgements
-Written by Michael Georgariou with input from Connor McKee
+Written by Michael Georgariou and Connor McKee
+
 Written for Dr. John Oliver's Computer Architecture class
