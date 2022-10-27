@@ -34,6 +34,7 @@ When the code first runs, three tables are created:
 - a square wave table
 - a sawtooth wave table
 - a sine wave table
+
 This code could easily be expanded to include more wavetypes by just adding another table with this waveform populated in it.
 
 A global pointer points to one of these lists, and indexing into this global pointer is how the MSP432 knows which value to next send to the DAC. To change which wave is being output, just change the pointer to point to that wave's table.
